@@ -1,0 +1,45 @@
+List Revisi Fruity Stock :
+A. Web
+[CABANG]
+1. Setiap input cabang baru, langsung terbuat Gudang Besar & Gudang Kecil
+2. Setiap input item, ada di gudang besar dan gudang kecil
+
+[ITEM]
+1. Harga satuan diinput oleh admin saat membuat list barang
+2. Tambahkan fungsi export ke excel dari datatable
+3. Jumlah satuan terkecil gak perlu diganti harga per carton
+
+[PEMBAYARAN]
+1. tambahkan field potongan %
+
+[LAPORAN STOCK GUDANG BESAR & KECIL]
+1. Pemisah antar gudang dipisah dengan Card
+2. Tulisan "List Gudang Besar / KECIL Cabang CBxxxxxx Kota" -> diganti susunannya
+"List Gudang Besar - Nama Cabang"
+dibawahnya baru tuliskan "Kode Cabang" dengan ukuran text lebih kecil dan tidak tebal
+3. Tambahkan fungsi export ke excel
+
+[LAPORAN OMSET]
+1. Tambahkan format rupiah
+2. Tambahkan fungsi export ke excel
+
+-------------------------
+
+B. Mobile :
+[GUDANG BESAR]
+1. Tambahkan Nama Cabang sebelum list agar tidak lupa kita berada di cabang mana
+2. Nomor Transaksi di List Transaksi Gudang Besar dikecilin
+3. Tanggal transaksi dibesarkan dan dijadikan format tanggal indonesia
+4. Waktu simpan data diganti nama Cabang (jadi Nama Gudang ada di sebelah kanan)
+5. Saat menambah / mengubah data transaksi :
+- a) gudang besar nya langsung terpilih
+- b) jika memilih tanda minus, warna tombol minus nya merah
+
+[GUDANG KECIL]
+1. Tambahkan Nama Cabang sebelum list agar tidak lupa kita berada di cabang mana
+2. Nomor Transaksi di List Transaksi Gudang Besar dikecilin
+3. Sisa Satuan diganti saja menjadi "Sisa Gramasi"
+
+[OMSET]
+1. Tambahkan Nama Cabang sebelum list agar tidak lupa kita berada di cabang mana
+2. Kode Omset di List Omset dikecilin
