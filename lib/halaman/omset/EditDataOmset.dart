@@ -1,33 +1,28 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names, use_build_context_synchronously, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unused_local_variable, unused_field, prefer_const_constructors, avoid_print
+// ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names, use_build_context_synchronously, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unused_local_variable, unused_field, prefer_const_constructors, avoid_print, must_be_immutable
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
-import 'package:sistem_gudang/halaman/gudang_kecil/ListDataTransaksiGudangKecil.dart';
 
 //FUNGSI
 import 'package:sistem_gudang/konfigurasi/konfigurasi.dart';
 import 'package:sistem_gudang/fungsi/data_shared_preferences/data_shared_preferences.dart';
-import 'package:sistem_gudang/fungsi/currency_format/currency_format.dart';
 
 //FORM HALAMAN
 import 'package:sistem_gudang/halaman/omset/ListDataOmset.dart';
 
 class EditDataOmset extends StatefulWidget {
   String Id_Omset;
-  EditDataOmset({required this.Id_Omset});
+  EditDataOmset({super.key, required this.Id_Omset});
 
   @override
-  State<EditDataOmset> createState() =>
-      _EditDataOmsetState();
+  State<EditDataOmset> createState() => _EditDataOmsetState();
 }
 
-class _EditDataOmsetState
-    extends State<EditDataOmset> {
+class _EditDataOmsetState extends State<EditDataOmset> {
   final _formKey = GlobalKey<FormState>();
   final _DataSharedPreferences = DataSharedPreferences();
   bool Loading_Form = false;
@@ -46,6 +41,7 @@ class _EditDataOmsetState
 
   @override
   void initState() {
+    super.initState();
     RefreshFungsi();
   }
 
@@ -56,9 +52,9 @@ class _EditDataOmsetState
 
     //FUNGSI MENGAMBIL DATA DARI STORE LOCAL
     var DataLocalInformasiLogin =
-    await _DataSharedPreferences.BacaDataSharedPreferences(
-        "Informasi_Login",
-        Tipe: "array_object");
+        await _DataSharedPreferences.BacaDataSharedPreferences(
+            "Informasi_Login",
+            Tipe: "array_object");
     //FUNGSI MENGAMBIL DATA DARI STORE LOCAL
 
     setState(() {
@@ -237,8 +233,7 @@ class _EditDataOmsetState
                           context,
                           //routing into add page
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  ListDataOmset()));
+                              builder: (context) => ListDataOmset()));
                     },
                   ),
                 ],
@@ -337,10 +332,12 @@ class _EditDataOmsetState
       barrierDismissible: false,
     );
   }
+
   Future SubmitHapus() async {
     print('Submit Hapus');
 
-    var Endpoint_API = "api/sistem_gudang/v1/omset/hapus_ke_tong_sampah_data_omset.php";
+    var Endpoint_API =
+        "api/sistem_gudang/v1/omset/hapus_ke_tong_sampah_data_omset.php";
     Map data_body = {
       "Token_Login": InformasiLogin['Token_Login_Saat_Ini'],
       "Id_Pengguna": InformasiLogin['Id_Pengguna'],
@@ -348,7 +345,7 @@ class _EditDataOmsetState
     };
     print(Terhubung_Ke_Internet);
 
-    if(Terhubung_Ke_Internet == true) {
+    if (Terhubung_Ke_Internet == true) {
       print("Hapus Dengan Koneksi Internet");
       try {
         print(Var_URL_API + Endpoint_API);
@@ -380,7 +377,8 @@ class _EditDataOmsetState
                       Navigator.push(
                           context,
                           //routing into add page
-                          MaterialPageRoute(builder: (context) => ListDataOmset()));
+                          MaterialPageRoute(
+                              builder: (context) => ListDataOmset()));
                     },
                   ),
                 ],
@@ -417,7 +415,7 @@ class _EditDataOmsetState
       } catch (e) {
         print(e);
       }
-    }else{
+    } else {
       print("Tidak Ada Koneksi Internet");
       // ALERT GAGAL
       AlertDialog alert = AlertDialog(
@@ -446,8 +444,7 @@ class _EditDataOmsetState
   Future BacaDataCabang() async {
     print('Baca Data');
 
-    var Endpoint_API =
-        "api/sistem_gudang/v1/cabang/baca_data_cabang.php";
+    var Endpoint_API = "api/sistem_gudang/v1/cabang/baca_data_cabang.php";
     Map data_body = {
       "Token_Login": InformasiLogin['Token_Login_Saat_Ini'],
       "Id_Pengguna": InformasiLogin['Id_Pengguna'],
@@ -589,237 +586,251 @@ class _EditDataOmsetState
       ),
       body: Loading_Form == true
           ? Container(
-        padding: EdgeInsets.all(15.0),
-        height: MediaQuery.of(context).size.height,
-        child: Center(child: CircularProgressIndicator()),
-      )
+              padding: EdgeInsets.all(15.0),
+              height: MediaQuery.of(context).size.height,
+              child: Center(child: CircularProgressIndicator()),
+            )
           : Form(
-        key: _formKey,
-        child: Container(
-          padding: EdgeInsets.all(0.0),
-          width: double.infinity,
-          child: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: Nama_Cabang,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      labelText: "Cabang",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      // prefixIcon: Icon(Icons.person, size: 24),
-                    ),
-                    readOnly: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Cabang';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
+              key: _formKey,
+              child: Container(
+                padding: EdgeInsets.all(0.0),
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: Nama_Cabang,
+                          keyboardType: TextInputType.name,
+                          decoration: InputDecoration(
+                            labelText: "Cabang",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            // prefixIcon: Icon(Icons.person, size: 24),
+                          ),
+                          readOnly: true,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Cabang';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
 
-                  TextFormField(
-                    controller: Kode_Omset,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      labelText: "Kode Omset",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      // prefixIcon: Icon(Icons.person, size: 24),
-                    ),
-                    readOnly: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Kode Omset';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
+                        TextFormField(
+                          controller: Kode_Omset,
+                          keyboardType: TextInputType.name,
+                          decoration: InputDecoration(
+                            labelText: "Kode Omset",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            // prefixIcon: Icon(Icons.person, size: 24),
+                          ),
+                          readOnly: true,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Kode Omset';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
 
-                  TextFormField(
-                    controller: Tanggal_Omset,
-                    decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.calendar_today),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      labelText: 'Tanggal',
-                      hintText: 'Tanggal',
-                      fillColor: Colors.white,
-                      filled: true,
-                    ),
-                    readOnly: true,
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101));
+                        TextFormField(
+                          controller: Tanggal_Omset,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.calendar_today),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            labelText: 'Tanggal',
+                            hintText: 'Tanggal',
+                            fillColor: Colors.white,
+                            filled: true,
+                          ),
+                          readOnly: true,
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2101));
 
-                      if (pickedDate != null) {
-                        print(pickedDate);
-                        String formattedDate =
-                        DateFormat('yyyy-MM-dd').format(pickedDate);
-                        print(formattedDate);
+                            if (pickedDate != null) {
+                              print(pickedDate);
+                              String formattedDate =
+                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              print(formattedDate);
 
-                        setState(() {
-                          Tanggal_Omset.text = formattedDate;
-                        });
-                      } else {
-                        print("Date is not selected");
-                      }
-                    },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Tanggal tidak boleh kosong!';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
+                              setState(() {
+                                Tanggal_Omset.text = formattedDate;
+                              });
+                            } else {
+                              print("Date is not selected");
+                            }
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Tanggal tidak boleh kosong!';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
 
-                  Divider(color: Colors.black),
-                  Row(children: [
-                    Expanded(
-                        child: Text(
-                          "List Pendapatan : ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                  ]),
+                        Divider(color: Colors.black),
+                        Row(children: const [
+                          Expanded(
+                              child: Text(
+                            "List Pendapatan : ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                        ]),
 
-                  // LIST ITEM
-                  ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    itemCount: Loading_Form
-                        ? ListArrayObjectOmset.length + 1
-                        : ListArrayObjectOmset.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index < ListArrayObjectOmset.length) {
-                        return Container(
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex:1,
-                                      child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                        // LIST ITEM
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: Loading_Form
+                              ? ListArrayObjectOmset.length + 1
+                              : ListArrayObjectOmset.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index < ListArrayObjectOmset.length) {
+                              return Container(
+                                  child: Column(
+                                children: [
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              TextFormField(
+                                                initialValue: (ListArrayObjectOmset[
+                                                                index][
+                                                            'Nama_Pembayaran'] ==
+                                                        null)
+                                                    ? ""
+                                                    : ListArrayObjectOmset[
+                                                                index]
+                                                            ['Nama_Pembayaran']
+                                                        .toString(),
+                                                keyboardType:
+                                                    TextInputType.name,
+                                                decoration: InputDecoration(
+                                                  labelText: "Pembayaran",
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                  fillColor: Colors.white,
+                                                  filled: true,
+                                                  // prefixIcon: Icon(Icons.person, size: 24),
+                                                ),
+                                                readOnly: true,
+                                              ),
+                                            ]),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(
                                           children: [
                                             TextFormField(
-                                              initialValue:(ListArrayObjectOmset[index]
-                                              ['Nama_Pembayaran'] == null) ? "" : ListArrayObjectOmset[index]
-                                              ['Nama_Pembayaran']
-                                                  .toString(),
-                                              keyboardType: TextInputType.name,
+                                              initialValue:
+                                                  (ListArrayObjectOmset[index]
+                                                              ['Pendapatan'] ==
+                                                          null)
+                                                      ? ""
+                                                      : ListArrayObjectOmset[
+                                                                  index]
+                                                              ['Pendapatan']
+                                                          .toString(),
+                                              keyboardType:
+                                                  TextInputType.number,
                                               decoration: InputDecoration(
-                                                labelText: "Pembayaran",
+                                                labelText: "Pendapatan",
                                                 border: OutlineInputBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                                      BorderRadius.circular(
+                                                          10.0),
                                                 ),
                                                 fillColor: Colors.white,
                                                 filled: true,
                                                 // prefixIcon: Icon(Icons.person, size: 24),
                                               ),
-                                              readOnly: true,
+                                              onChanged: (value) {
+                                                UbahPendapatanOmset(
+                                                    index, value);
+                                              },
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Pendapatan tidak boleh kosong!';
+                                                }
+                                                return null;
+                                              },
                                             ),
-                                          ]),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      flex:2,
-                                      child: Column(
-                                        children: [
-                                          TextFormField(
-                                            initialValue:
-                                            (ListArrayObjectOmset[index]
-                                            ['Pendapatan'] == null) ? "" : ListArrayObjectOmset[index]
-                                            ['Pendapatan']
-                                                .toString(),
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              labelText: "Pendapatan",
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10.0),
-                                              ),
-                                              fillColor: Colors.white,
-                                              filled: true,
-                                              // prefixIcon: Icon(Icons.person, size: 24),
-                                            ),
-                                            onChanged: (value) {
-                                              UbahPendapatanOmset(index, value);
-                                            },
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return 'Pendapatan tidak boleh kosong!';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                ],
+                              ));
+                            } else {
+                              return Padding(
+                                padding:
+                                    EdgeInsets.only(top: 15.0, bottom: 20.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
                                 ),
-                              ],
-                            ));
-                      } else {
-                        return Padding(
-                          padding:
-                          EdgeInsets.only(top: 15.0, bottom: 20.0),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                    },
-                    // separatorBuilder: (BuildContext context, int index) =>
-                    //     const Divider(),
-                  ),
-
-
-                  SizedBox(height: 30),
-                  // TOMBOL SIMPAN
-                  Center(
-                    child: Container(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 232, 18, 17),
-                          minimumSize: const Size.fromHeight(50),
+                              );
+                            }
+                          },
+                          // separatorBuilder: (BuildContext context, int index) =>
+                          //     const Divider(),
                         ),
-                        onPressed: () {
-                          //validate
-                          if (_formKey.currentState!.validate()) {
-                            //send data to database with this method
-                            SubmitUpdate();
-                          }
-                        },
-                        child: new Text('UPDATE'),
-                      ),
+
+                        SizedBox(height: 30),
+                        // TOMBOL SIMPAN
+                        Center(
+                          child: Container(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Color.fromARGB(255, 232, 18, 17),
+                                minimumSize: const Size.fromHeight(50),
+                              ),
+                              onPressed: () {
+                                //validate
+                                if (_formKey.currentState!.validate()) {
+                                  //send data to database with this method
+                                  SubmitUpdate();
+                                }
+                              },
+                              child: Text('UPDATE'),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

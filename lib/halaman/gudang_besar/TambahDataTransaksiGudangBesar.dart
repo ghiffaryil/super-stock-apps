@@ -1,18 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names, use_build_context_synchronously, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unused_local_variable, unused_field, prefer_const_constructors, avoid_print
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 
 //FUNGSI
 import 'package:sistem_gudang/konfigurasi/konfigurasi.dart';
 import 'package:sistem_gudang/fungsi/data_shared_preferences/data_shared_preferences.dart';
-import 'package:sistem_gudang/fungsi/currency_format/currency_format.dart';
 
 //FORM HALAMAN
 import 'package:sistem_gudang/halaman/gudang_besar/ListDataTransaksiGudangBesar.dart';
@@ -48,6 +45,7 @@ class _TambahDataTransaksiGudangBesarState
 
   @override
   void initState() {
+    super.initState();
     RefreshFungsi();
   }
 
@@ -64,7 +62,8 @@ class _TambahDataTransaksiGudangBesarState
     });
 
     setState(() {
-      Kode_Stok_Gudang_Besar.text = "SGB" + DateFormat("yyMMddHHmmss").format(DateTime.now());
+      Kode_Stok_Gudang_Besar.text =
+          "SGB${DateFormat("yyMMddHHmmss").format(DateTime.now())}";
     });
 
     //FUNGSI MENGAMBIL DATA DARI STORE LOCAL
@@ -110,13 +109,14 @@ class _TambahDataTransaksiGudangBesarState
   Future SubmitSimpan() async {
     print('Submit Simpan');
     var ListArrayObjectItem_Terpakai = [];
-    ListArrayObjectItem.forEach((data) {
-      if(data['QTY'] != ""){
+    for (var data in ListArrayObjectItem) {
+      if (data['QTY'] != "") {
         ListArrayObjectItem_Terpakai.add(data);
       }
-    });
+    }
 
-    var Endpoint_API = "api/sistem_gudang/v1/transaksi_gudang_besar/tambah_data_transaksi_gudang_besar.php";
+    var Endpoint_API =
+        "api/sistem_gudang/v1/transaksi_gudang_besar/tambah_data_transaksi_gudang_besar.php";
     Map data_body = {
       "Token_Login": InformasiLogin['Token_Login_Saat_Ini'],
       "Id_Pengguna": InformasiLogin['Id_Pengguna'],
@@ -300,9 +300,8 @@ class _TambahDataTransaksiGudangBesarState
             setState(() {
               ListDataGudangBesar = data['Data'];
             });
-            if(InformasiLogin['Sebagai'] != "Admin") {
-
-            }else{
+            if (InformasiLogin['Sebagai'] != "Admin") {
+            } else {
               var ListDataGudangBesarDanKecilSelanjutnya =
                   ListDataGudangBesarDanKecil + data['Data'];
               setState(() {
@@ -429,7 +428,7 @@ class _TambahDataTransaksiGudangBesarState
       print(e);
     }
 
-    ListDataItem.forEach((data) {
+    for (var data in ListDataItem) {
       Map Data_Item_Detail = {
         "Nama_Item": data['Nama_Item'],
         "Id_Item": data['Id_Item'],
@@ -444,8 +443,7 @@ class _TambahDataTransaksiGudangBesarState
       setState(() {
         ListArrayObjectItem = ListArrayObjectItemSelanjutnya;
       });
-
-    });
+    }
   }
 
   //FUNGSI TAMBAH ITEM
@@ -523,19 +521,24 @@ class _TambahDataTransaksiGudangBesarState
       ListArrayObjectItemSelanjutnya[index]['Id_Gudang_Kecil'] = null;
 
       var Data_Gudang;
-      Data_Gudang = ListDataGudangBesar.firstWhere((item) => item["Id_Gudang_Besar"] == Id_Gudang, orElse: () => null);
+      Data_Gudang = ListDataGudangBesar.firstWhere(
+          (item) => item["Id_Gudang_Besar"] == Id_Gudang,
+          orElse: () => null);
 
-      ListArrayObjectItemSelanjutnya[index]['Nama_Gudang'] = Data_Gudang["Nama_Gudang"];
+      ListArrayObjectItemSelanjutnya[index]['Nama_Gudang'] =
+          Data_Gudang["Nama_Gudang"];
     } else {
       ListArrayObjectItemSelanjutnya[index]['Id_Gudang_Besar'] = null;
       ListArrayObjectItemSelanjutnya[index]['Id_Gudang_Kecil'] = Id_Gudang;
 
       var Data_Gudang;
-      Data_Gudang = ListDataGudangKecil.firstWhere((item) => item["Id_Gudang_Kecil"] == Id_Gudang, orElse: () => null);
+      Data_Gudang = ListDataGudangKecil.firstWhere(
+          (item) => item["Id_Gudang_Kecil"] == Id_Gudang,
+          orElse: () => null);
 
-      ListArrayObjectItemSelanjutnya[index]['Nama_Gudang'] = Data_Gudang["Nama_Gudang"];
+      ListArrayObjectItemSelanjutnya[index]['Nama_Gudang'] =
+          Data_Gudang["Nama_Gudang"];
     }
-
 
     setState(() {
       ListArrayObjectItem = ListArrayObjectItemSelanjutnya;
@@ -572,8 +575,9 @@ class _TambahDataTransaksiGudangBesarState
                       : ListDataGudangBesarDanKecil.length,
                   itemBuilder: (BuildContext context, int index) {
                     if (index < ListDataGudangBesarDanKecil.length) {
-                      if(Id_Gudang_Besar == ListDataGudangBesarDanKecil[index]
-                      ['Id_Gudang_Besar']){
+                      if (Id_Gudang_Besar ==
+                          ListDataGudangBesarDanKecil[index]
+                              ['Id_Gudang_Besar']) {
                         return Container();
                       }
                       return Container(
@@ -678,7 +682,7 @@ class _TambahDataTransaksiGudangBesarState
   // FUNGSI AMBIL NAMA ITEM BERDASARKAN ID ITEM UNTUK DROPDOWN SEARCH
   AmbilNamaItemBerdasarkanIdItem(Id_Item) {
     final selected_Item = ListDataItem.firstWhere(
-          (e) => "${e['Id_Item']}" == Id_Item,
+      (e) => "${e['Id_Item']}" == Id_Item,
       orElse: () => null,
     );
     if (selected_Item != null) {
@@ -770,7 +774,7 @@ class _TambahDataTransaksiGudangBesarState
                             labelText: "Gudang Besar",
                             border: OutlineInputBorder(
                               borderRadius:
-                              const BorderRadius.all(Radius.circular(10.0)),
+                                  const BorderRadius.all(Radius.circular(10.0)),
                             ),
                           ),
                           child: Container(
@@ -785,7 +789,8 @@ class _TambahDataTransaksiGudangBesarState
                               items: ListDataGudangBesar.map((item) {
                                 return DropdownMenuItem(
                                   value: item['Id_Gudang_Besar'],
-                                  child: Text(item['Kode_Gudang_Besar'].toString() + " - " + item['Nama_Gudang'].toString()),
+                                  child: Text(
+                                      "${item['Kode_Gudang_Besar']} - ${item['Nama_Gudang']}"),
                                 );
                               }).toList(),
                               onTap: () {
@@ -817,9 +822,9 @@ class _TambahDataTransaksiGudangBesarState
                           ),
                           readOnly: true,
                           onTap: () async {
-                            if(InformasiLogin['Sebagai'] != "Admin"){
+                            if (InformasiLogin['Sebagai'] != "Admin") {
                               return;
-                            }else{
+                            } else {
                               DateTime? pickedDate = await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.now(),
@@ -829,7 +834,7 @@ class _TambahDataTransaksiGudangBesarState
                               if (pickedDate != null) {
                                 print(pickedDate);
                                 String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
                                 print(formattedDate);
 
                                 setState(() {
@@ -850,7 +855,7 @@ class _TambahDataTransaksiGudangBesarState
                         SizedBox(height: 20),
 
                         Divider(color: Colors.black),
-                        Row(children: [
+                        Row(children: const [
                           Expanded(
                               child: Text(
                             "List Item : ",
@@ -878,12 +883,15 @@ class _TambahDataTransaksiGudangBesarState
                                         flex: 2,
                                         child: Column(children: [
                                           TextFormField(
-                                            initialValue: ListArrayObjectItem[index]['Nama_Item'],
+                                            initialValue:
+                                                ListArrayObjectItem[index]
+                                                    ['Nama_Item'],
                                             keyboardType: TextInputType.name,
                                             decoration: InputDecoration(
                                               labelText: "Item",
                                               border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
                                               ),
                                               fillColor: Colors.white,
                                               filled: true,
@@ -897,8 +905,9 @@ class _TambahDataTransaksiGudangBesarState
                                       SizedBox(
                                         width: 50,
                                         child: TextFormField(
-                                          initialValue: ListArrayObjectItem[
-                                          index]['QTY'].toString(),
+                                          initialValue:
+                                              ListArrayObjectItem[index]['QTY']
+                                                  .toString(),
                                           keyboardType: TextInputType.number,
                                           decoration: InputDecoration(
                                             labelText: "QTY",
@@ -943,7 +952,7 @@ class _TambahDataTransaksiGudangBesarState
                                                 onPressed: () {
                                                   TombolTambahStok(index);
                                                 },
-                                                child: new Icon(
+                                                child: Icon(
                                                   Icons.add,
                                                   color: (ListArrayObjectItem[
                                                               index]['Tipe'] ==
@@ -957,12 +966,12 @@ class _TambahDataTransaksiGudangBesarState
                                                   child: ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor:
-                                                  (ListArrayObjectItem[
-                                                  index]
-                                                  ['Tipe'] ==
-                                                      "Kurangi Stok")
-                                                      ? Colors.red
-                                                      : Colors.white,
+                                                      (ListArrayObjectItem[
+                                                                      index]
+                                                                  ['Tipe'] ==
+                                                              "Kurangi Stok")
+                                                          ? Colors.red
+                                                          : Colors.white,
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 1,
                                                       horizontal: 1),
@@ -970,11 +979,11 @@ class _TambahDataTransaksiGudangBesarState
                                                 onPressed: () {
                                                   ModalGudang(context, index);
                                                 },
-                                                child: new Icon(
+                                                child: Icon(
                                                   Icons.remove,
                                                   color: (ListArrayObjectItem[
-                                                  index]['Tipe'] ==
-                                                      "Kurangi Stok")
+                                                              index]['Tipe'] ==
+                                                          "Kurangi Stok")
                                                       ? Colors.white
                                                       : Colors.black,
                                                 ),
@@ -1022,7 +1031,7 @@ class _TambahDataTransaksiGudangBesarState
                                                       ['Id_Gudang_Besar'] !=
                                                   null)) ...[
                                             Row(
-                                              children: [
+                                              children: const [
                                                 Expanded(
                                                     child: Text(
                                                   "Gudang Besar",
@@ -1036,47 +1045,45 @@ class _TambahDataTransaksiGudangBesarState
                                               children: [
                                                 Expanded(
                                                     child: Text(
-                                                      ListArrayObjectItem[index]
+                                                  ListArrayObjectItem[index]
                                                       ['Nama_Gudang'],
-                                                      style:
+                                                  style:
                                                       TextStyle(fontSize: 10),
-                                                      textAlign: TextAlign.center,
-                                                    )),
+                                                  textAlign: TextAlign.center,
+                                                )),
                                               ],
                                             ),
                                           ],
-
                                           if ((ListArrayObjectItem[index]
-                                          ['Tipe'] ==
-                                              "Kurangi Stok") &&
+                                                      ['Tipe'] ==
+                                                  "Kurangi Stok") &&
                                               (ListArrayObjectItem[index]
-                                              ['Id_Gudang_Kecil'] !=
+                                                      ['Id_Gudang_Kecil'] !=
                                                   null)) ...[
                                             Row(
-                                              children: [
+                                              children: const [
                                                 Expanded(
                                                     child: Text(
-                                                      "Gudang Kecil",
-                                                      style:
+                                                  "Gudang Kecil",
+                                                  style:
                                                       TextStyle(fontSize: 10),
-                                                      textAlign: TextAlign.center,
-                                                    )),
+                                                  textAlign: TextAlign.center,
+                                                )),
                                               ],
                                             ),
                                             Row(
                                               children: [
                                                 Expanded(
                                                     child: Text(
-                                                      ListArrayObjectItem[index]
+                                                  ListArrayObjectItem[index]
                                                       ['Nama_Gudang'],
-                                                      style:
+                                                  style:
                                                       TextStyle(fontSize: 10),
-                                                      textAlign: TextAlign.center,
-                                                    )),
+                                                  textAlign: TextAlign.center,
+                                                )),
                                               ],
                                             ),
                                           ]
-
                                         ],
                                       )),
                                     ],
@@ -1103,7 +1110,8 @@ class _TambahDataTransaksiGudangBesarState
                           child: Container(
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color.fromARGB(255, 232, 18, 17),
+                                backgroundColor:
+                                    Color.fromARGB(255, 232, 18, 17),
                                 minimumSize: const Size.fromHeight(50),
                               ),
                               onPressed: () {
@@ -1113,7 +1121,7 @@ class _TambahDataTransaksiGudangBesarState
                                   SubmitSimpan();
                                 }
                               },
-                              child: new Text('SIMPAN'),
+                              child: Text('SIMPAN'),
                             ),
                           ),
                         )

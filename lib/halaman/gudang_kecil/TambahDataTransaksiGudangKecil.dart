@@ -1,17 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names, use_build_context_synchronously, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unused_local_variable, unused_field, prefer_const_constructors, avoid_print
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 //FUNGSI
 import 'package:sistem_gudang/konfigurasi/konfigurasi.dart';
 import 'package:sistem_gudang/fungsi/data_shared_preferences/data_shared_preferences.dart';
-import 'package:sistem_gudang/fungsi/currency_format/currency_format.dart';
 
 //FORM HALAMAN
 import 'package:sistem_gudang/halaman/gudang_kecil/ListDataTransaksiGudangKecil.dart';
@@ -47,6 +44,7 @@ class _TambahDataTransaksiGudangKecilState
 
   @override
   void initState() {
+    super.initState();
     RefreshFungsi();
   }
 
@@ -64,7 +62,7 @@ class _TambahDataTransaksiGudangKecilState
 
     setState(() {
       Kode_Stok_Gudang_Kecil.text =
-          "SGK" + DateFormat("yyMMddHHmmss").format(DateTime.now());
+          "SGK${DateFormat("yyMMddHHmmss").format(DateTime.now())}";
     });
 
     //FUNGSI MENGAMBIL DATA DARI STORE LOCAL
@@ -110,11 +108,11 @@ class _TambahDataTransaksiGudangKecilState
   Future SubmitSimpan() async {
     print('Submit Simpan');
     var ListArrayObjectItem_Terpakai = [];
-    ListArrayObjectItem.forEach((data) {
-      if((data['Stok_Akhir'] != "") || (data['Sisa_Satuan_Terkecil'] != "")){
+    for (var data in ListArrayObjectItem) {
+      if ((data['Stok_Akhir'] != "") || (data['Sisa_Satuan_Terkecil'] != "")) {
         ListArrayObjectItem_Terpakai.add(data);
       }
-    });
+    }
 
     var Endpoint_API =
         "api/sistem_gudang/v1/transaksi_gudang_kecil/tambah_data_transaksi_gudang_kecil.php";
@@ -426,7 +424,7 @@ class _TambahDataTransaksiGudangKecilState
       print(e);
     }
 
-    ListDataItem.forEach((data) {
+    for (var data in ListDataItem) {
       Map Data_Item_Detail = {
         "Nama_Item": data['Nama_Item'],
         "Id_Item": data['Id_Item'],
@@ -438,8 +436,7 @@ class _TambahDataTransaksiGudangKecilState
       setState(() {
         ListArrayObjectItem = ListArrayObjectItemSelanjutnya;
       });
-
-    });
+    }
   }
 
   //FUNGSI TAMBAH ITEM
@@ -502,7 +499,7 @@ class _TambahDataTransaksiGudangKecilState
   // FUNGSI AMBIL NAMA ITEM BERDASARKAN ID ITEM UNTUK DROPDOWN SEARCH
   AmbilNamaItemBerdasarkanIdItem(Id_Item) {
     final selected_Item = ListDataItem.firstWhere(
-          (e) => "${e['Id_Item']}" == Id_Item,
+      (e) => "${e['Id_Item']}" == Id_Item,
       orElse: () => null,
     );
     if (selected_Item != null) {
@@ -610,9 +607,7 @@ class _TambahDataTransaksiGudangKecilState
                                 return DropdownMenuItem(
                                   value: item['Id_Gudang_Kecil'],
                                   child: Text(
-                                      item['Kode_Gudang_Kecil'].toString() +
-                                          " - " +
-                                          item['Nama_Gudang'].toString()),
+                                      "${item['Kode_Gudang_Kecil']} - ${item['Nama_Gudang']}"),
                                 );
                               }).toList(),
                               onTap: () {
@@ -644,9 +639,9 @@ class _TambahDataTransaksiGudangKecilState
                           ),
                           readOnly: true,
                           onTap: () async {
-                            if(InformasiLogin['Sebagai'] != "Admin"){
+                            if (InformasiLogin['Sebagai'] != "Admin") {
                               return;
-                            }else{
+                            } else {
                               DateTime? pickedDate = await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.now(),
@@ -656,7 +651,7 @@ class _TambahDataTransaksiGudangKecilState
                               if (pickedDate != null) {
                                 print(pickedDate);
                                 String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
                                 print(formattedDate);
 
                                 setState(() {
@@ -676,7 +671,7 @@ class _TambahDataTransaksiGudangKecilState
                         ),
                         SizedBox(height: 20),
                         Divider(color: Colors.black),
-                        Row(children: [
+                        Row(children: const [
                           Expanded(
                               child: Text(
                             "List Item : ",
@@ -704,12 +699,15 @@ class _TambahDataTransaksiGudangKecilState
                                         flex: 2,
                                         child: Column(children: [
                                           TextFormField(
-                                            initialValue: ListArrayObjectItem[index]['Nama_Item'],
+                                            initialValue:
+                                                ListArrayObjectItem[index]
+                                                    ['Nama_Item'],
                                             keyboardType: TextInputType.name,
                                             decoration: InputDecoration(
                                               labelText: "Item",
                                               border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
                                               ),
                                               fillColor: Colors.white,
                                               filled: true,
@@ -725,11 +723,16 @@ class _TambahDataTransaksiGudangKecilState
                                           children: [
                                             TextFormField(
                                               initialValue:
-                                              (ListArrayObjectItem[index]
-                                              ['Stok_Akhir'] == null) ? "" : ListArrayObjectItem[index]
-                                              ['Stok_Akhir']
-                                                  .toString(),
-                                              keyboardType: TextInputType.number,
+                                                  (ListArrayObjectItem[index]
+                                                              ['Stok_Akhir'] ==
+                                                          null)
+                                                      ? ""
+                                                      : ListArrayObjectItem[
+                                                                  index]
+                                                              ['Stok_Akhir']
+                                                          .toString(),
+                                              keyboardType:
+                                                  TextInputType.number,
                                               decoration: InputDecoration(
                                                 labelText: "Stok Akhir",
                                                 border: OutlineInputBorder(
@@ -758,30 +761,35 @@ class _TambahDataTransaksiGudangKecilState
                                         child: Column(
                                           children: [
                                             TextFormField(
-                                              initialValue:
-                                              (ListArrayObjectItem[index]
-                                              ['Sisa_Satuan_Terkecil'] == null) ? "" : ListArrayObjectItem[index]
-                                              ['Sisa_Satuan_Terkecil']
-                                                  .toString(),
-                                              keyboardType: TextInputType.number,
+                                              initialValue: (ListArrayObjectItem[
+                                                              index][
+                                                          'Sisa_Satuan_Terkecil'] ==
+                                                      null)
+                                                  ? ""
+                                                  : ListArrayObjectItem[index][
+                                                          'Sisa_Satuan_Terkecil']
+                                                      .toString(),
+                                              keyboardType:
+                                                  TextInputType.number,
                                               decoration: InputDecoration(
                                                 labelText: "Sisa Gramasi",
                                                 border: OutlineInputBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      10.0),
+                                                      BorderRadius.circular(
+                                                          10.0),
                                                 ),
                                                 fillColor: Colors.white,
                                                 filled: true,
                                                 contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    vertical: 5,
-                                                    horizontal: 10),
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 10),
                                                 // prefixIcon: Icon(Icons.person, size: 24),
                                               ),
                                               style: TextStyle(fontSize: 14),
                                               onChanged: (value) {
-                                                UbahSisaSatuanTerkecilItem(index, value);
+                                                UbahSisaSatuanTerkecilItem(
+                                                    index, value);
                                               },
                                             ),
                                           ],
@@ -811,7 +819,8 @@ class _TambahDataTransaksiGudangKecilState
                           child: Container(
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color.fromARGB(255, 232, 18, 17),
+                                backgroundColor:
+                                    Color.fromARGB(255, 232, 18, 17),
                                 minimumSize: const Size.fromHeight(50),
                               ),
                               onPressed: () {
@@ -821,7 +830,7 @@ class _TambahDataTransaksiGudangKecilState
                                   SubmitSimpan();
                                 }
                               },
-                              child: new Text('SIMPAN'),
+                              child: Text('SIMPAN'),
                             ),
                           ),
                         )

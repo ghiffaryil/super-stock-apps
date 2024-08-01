@@ -1,26 +1,24 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names, use_build_context_synchronously, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unused_local_variable, unused_field, prefer_const_constructors, avoid_print
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 
 //FUNGSI
 import 'package:sistem_gudang/konfigurasi/konfigurasi.dart';
 import 'package:sistem_gudang/fungsi/data_shared_preferences/data_shared_preferences.dart';
-import 'package:sistem_gudang/fungsi/currency_format/currency_format.dart';
 
 //FORM HALAMAN
 import 'package:sistem_gudang/halaman/gudang_besar/ListDataTransaksiGudangBesar.dart';
 
+// ignore: must_be_immutable
 class EditDataTransaksiGudangBesar extends StatefulWidget {
   String Id_Stok_Gudang_Besar;
 
-  EditDataTransaksiGudangBesar({required this.Id_Stok_Gudang_Besar});
+  EditDataTransaksiGudangBesar({super.key, required this.Id_Stok_Gudang_Besar});
 
   @override
   State<EditDataTransaksiGudangBesar> createState() =>
@@ -51,6 +49,7 @@ class _EditDataTransaksiGudangBesarState
 
   @override
   void initState() {
+    super.initState();
     RefreshFungsi();
   }
 
@@ -142,7 +141,7 @@ class _EditDataTransaksiGudangBesarState
             var ListArrayObjectItem_Yang_Tersimpan_Pada_Database =
                 jsonDecode(data['Data']['JSON_Item']);
 
-            ListDataItem.forEach((data) {
+            for (var data in ListDataItem) {
               Map Data_Item_Detail = {
                 "Nama_Item": data['Nama_Item'],
                 "Id_Item": data['Id_Item'],
@@ -163,9 +162,12 @@ class _EditDataTransaksiGudangBesarState
                     "Id_Item": data['Id_Item'],
                     "QTY": data_yang_tersimpan_pada_database['QTY'],
                     "Tipe": data_yang_tersimpan_pada_database['Tipe'],
-                    "Id_Gudang_Kecil": data_yang_tersimpan_pada_database['Id_Gudang_Kecil'],
-                    "Id_Gudang_Besar": data_yang_tersimpan_pada_database['Id_Gudang_Besar'],
-                    "Nama_Gudang": data_yang_tersimpan_pada_database['Nama_Gudang'],
+                    "Id_Gudang_Kecil":
+                        data_yang_tersimpan_pada_database['Id_Gudang_Kecil'],
+                    "Id_Gudang_Besar":
+                        data_yang_tersimpan_pada_database['Id_Gudang_Besar'],
+                    "Nama_Gudang":
+                        data_yang_tersimpan_pada_database['Nama_Gudang'],
                   };
                 }
               });
@@ -175,7 +177,7 @@ class _EditDataTransaksiGudangBesarState
               setState(() {
                 ListArrayObjectItem = ListArrayObjectItemSelanjutnya;
               });
-            });
+            }
           } else {
             setState(() {
               EditData = {};
@@ -192,11 +194,11 @@ class _EditDataTransaksiGudangBesarState
   Future SubmitUpdate() async {
     print('Submit Update');
     var ListArrayObjectItem_Terpakai = [];
-    ListArrayObjectItem.forEach((data) {
-      if(data['QTY'] != ""){
+    for (var data in ListArrayObjectItem) {
+      if (data['QTY'] != "") {
         ListArrayObjectItem_Terpakai.add(data);
       }
-    });
+    }
 
     var Endpoint_API =
         "api/sistem_gudang/v1/transaksi_gudang_besar/update_data_transaksi_gudang_besar.php";
@@ -529,9 +531,8 @@ class _EditDataTransaksiGudangBesarState
             setState(() {
               ListDataGudangBesar = data['Data'];
             });
-            if(InformasiLogin['Sebagai'] != "Admin") {
-
-            }else{
+            if (InformasiLogin['Sebagai'] != "Admin") {
+            } else {
               var ListDataGudangBesarDanKecilSelanjutnya =
                   ListDataGudangBesarDanKecil + data['Data'];
               setState(() {
@@ -539,8 +540,6 @@ class _EditDataTransaksiGudangBesarState
                     ListDataGudangBesarDanKecilSelanjutnya;
               });
             }
-
-
           } else {
             setState(() {
               ListDataGudangBesar = [];
@@ -785,8 +784,9 @@ class _EditDataTransaksiGudangBesarState
                       : ListDataGudangBesarDanKecil.length,
                   itemBuilder: (BuildContext context, int index) {
                     if (index < ListDataGudangBesarDanKecil.length) {
-                      if(Id_Gudang_Besar == ListDataGudangBesarDanKecil[index]
-                      ['Id_Gudang_Besar']){
+                      if (Id_Gudang_Besar ==
+                          ListDataGudangBesarDanKecil[index]
+                              ['Id_Gudang_Besar']) {
                         return Container();
                       }
                       return Container(
@@ -1007,9 +1007,7 @@ class _EditDataTransaksiGudangBesarState
                                 return DropdownMenuItem(
                                   value: item['Id_Gudang_Besar'],
                                   child: Text(
-                                      item['Kode_Gudang_Besar'].toString() +
-                                          " - " +
-                                          item['Nama_Gudang'].toString()),
+                                      "${item['Kode_Gudang_Besar']} - ${item['Nama_Gudang']}"),
                                 );
                               }).toList(),
                               onTap: () {
@@ -1074,7 +1072,7 @@ class _EditDataTransaksiGudangBesarState
                         SizedBox(height: 20),
 
                         Divider(color: Colors.black),
-                        Row(children: [
+                        Row(children: const [
                           Expanded(
                               child: Text(
                             "List Item : ",
@@ -1171,7 +1169,7 @@ class _EditDataTransaksiGudangBesarState
                                                 onPressed: () {
                                                   TombolTambahStok(index);
                                                 },
-                                                child: new Icon(
+                                                child: Icon(
                                                   Icons.add,
                                                   color: (ListArrayObjectItem[
                                                               index]['Tipe'] ==
@@ -1198,7 +1196,7 @@ class _EditDataTransaksiGudangBesarState
                                                 onPressed: () {
                                                   ModalGudang(context, index);
                                                 },
-                                                child: new Icon(
+                                                child: Icon(
                                                   Icons.remove,
                                                   color: (ListArrayObjectItem[
                                                               index]['Tipe'] ==
@@ -1250,7 +1248,7 @@ class _EditDataTransaksiGudangBesarState
                                                       ['Id_Gudang_Besar'] !=
                                                   null)) ...[
                                             Row(
-                                              children: [
+                                              children: const [
                                                 Expanded(
                                                     child: Text(
                                                   "Gudang Besar",
@@ -1280,7 +1278,7 @@ class _EditDataTransaksiGudangBesarState
                                                       ['Id_Gudang_Kecil'] !=
                                                   null)) ...[
                                             Row(
-                                              children: [
+                                              children: const [
                                                 Expanded(
                                                     child: Text(
                                                   "Gudang Kecil",
@@ -1340,7 +1338,7 @@ class _EditDataTransaksiGudangBesarState
                                   SubmitUpdate();
                                 }
                               },
-                              child: new Text('UPDATE'),
+                              child: Text('UPDATE'),
                             ),
                           ),
                         )

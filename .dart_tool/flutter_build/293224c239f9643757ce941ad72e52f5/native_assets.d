@@ -1,0 +1,1 @@
+ /Users/ari/Documents/Project/Flutter/super-stock-apps/.dart_tool/flutter_build/293224c239f9643757ce941ad72e52f5/native_assets.yaml: 

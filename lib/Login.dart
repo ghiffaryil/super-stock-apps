@@ -10,7 +10,6 @@ import 'package:connectivity/connectivity.dart';
 //FUNGSI
 import 'package:sistem_gudang/konfigurasi/konfigurasi.dart';
 import 'package:sistem_gudang/fungsi/data_shared_preferences/data_shared_preferences.dart';
-import 'package:sistem_gudang/fungsi/currency_format/currency_format.dart';
 
 //FORM HALAMAN
 import 'package:sistem_gudang/Home.dart';
@@ -39,6 +38,7 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
+    super.initState();
     RefreshFungsi();
   }
 

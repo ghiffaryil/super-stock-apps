@@ -47,7 +47,7 @@ class DrawerMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Center(child: Text(Var_Judul_Aplikasi + "\n" + Var_Versi_Aplikasi, textAlign: TextAlign.center)),
+            title: Center(child: Text("$Var_Judul_Aplikasi\n$Var_Versi_Aplikasi", textAlign: TextAlign.center)),
             onTap: () {},
           ),
         ],

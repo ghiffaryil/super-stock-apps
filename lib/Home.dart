@@ -576,7 +576,7 @@ class _HomeState extends State<Home> {
                             color: Color.fromARGB(255, 105, 3, 3),
                           ),
                           child: Column(
-                            children: [
+                            children: const [
                               Row(
                                 children: [
                                   Expanded(
@@ -585,7 +585,7 @@ class _HomeState extends State<Home> {
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
-                                          children: const [
+                                          children: [
                                         Text(
                                           'Gudang Besar',
                                           style: TextStyle(
@@ -599,7 +599,7 @@ class _HomeState extends State<Home> {
                                           CrossAxisAlignment.end,
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      children: const [
+                                      children: [
                                         Icon(Icons.warehouse,
                                             color: Colors.white),
                                       ],
@@ -630,7 +630,7 @@ class _HomeState extends State<Home> {
                             color: Color.fromARGB(255, 165, 8, 8),
                           ),
                           child: Column(
-                            children: [
+                            children: const [
                               Row(
                                 children: [
                                   Expanded(
@@ -639,7 +639,7 @@ class _HomeState extends State<Home> {
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
-                                          children: const [
+                                          children: [
                                         Text(
                                           'Gudang Kecil',
                                           style: TextStyle(
@@ -653,7 +653,7 @@ class _HomeState extends State<Home> {
                                           CrossAxisAlignment.end,
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      children: const [
+                                      children: [
                                         Icon(Icons.warehouse_outlined,
                                             color: Colors.white),
                                       ],
@@ -683,7 +683,7 @@ class _HomeState extends State<Home> {
                             color: Color.fromARGB(255, 203, 2, 2),
                           ),
                           child: Column(
-                            children: [
+                            children: const [
                               Row(
                                 children: [
                                   Expanded(
@@ -692,7 +692,7 @@ class _HomeState extends State<Home> {
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
-                                          children: const [
+                                          children: [
                                         Text(
                                           'Input Omset',
                                           style: TextStyle(
@@ -706,7 +706,7 @@ class _HomeState extends State<Home> {
                                           CrossAxisAlignment.end,
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      children: const [
+                                      children: [
                                         Icon(Icons.money, color: Colors.white),
                                       ],
                                     ),
@@ -735,7 +735,7 @@ class _HomeState extends State<Home> {
                             color: Color.fromARGB(255, 217, 26, 26),
                           ),
                           child: Column(
-                            children: [
+                            children: const [
                               Row(
                                 children: [
                                   Expanded(
@@ -744,7 +744,7 @@ class _HomeState extends State<Home> {
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
-                                          children: const [
+                                          children: [
                                         Text(
                                           'Input Harian',
                                           style: TextStyle(
@@ -758,7 +758,7 @@ class _HomeState extends State<Home> {
                                           CrossAxisAlignment.end,
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      children: const [
+                                      children: [
                                         Icon(Icons.list_alt,
                                             color: Colors.white),
                                       ],

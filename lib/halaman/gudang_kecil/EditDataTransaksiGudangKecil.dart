@@ -1,26 +1,23 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names, use_build_context_synchronously, prefer_typing_uninitialized_variables, avoid_unnecessary_containers, unused_local_variable, unused_field, prefer_const_constructors, avoid_print
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
 import 'package:sistem_gudang/halaman/gudang_kecil/ListDataTransaksiGudangKecil.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 
 //FUNGSI
 import 'package:sistem_gudang/konfigurasi/konfigurasi.dart';
 import 'package:sistem_gudang/fungsi/data_shared_preferences/data_shared_preferences.dart';
-import 'package:sistem_gudang/fungsi/currency_format/currency_format.dart';
 
 //FORM HALAMAN
-import 'package:sistem_gudang/halaman/gudang_besar/ListDataTransaksiGudangBesar.dart';
 
+// ignore: must_be_immutable
 class EditDataTransaksiGudangKecil extends StatefulWidget {
   String Id_Stok_Gudang_Kecil;
-  EditDataTransaksiGudangKecil({required this.Id_Stok_Gudang_Kecil});
+  EditDataTransaksiGudangKecil({super.key, required this.Id_Stok_Gudang_Kecil});
 
   @override
   State<EditDataTransaksiGudangKecil> createState() =>
@@ -51,6 +48,7 @@ class _EditDataTransaksiGudangKecilState
 
   @override
   void initState() {
+    super.initState();
     RefreshFungsi();
   }
 
@@ -61,9 +59,9 @@ class _EditDataTransaksiGudangKecilState
 
     //FUNGSI MENGAMBIL DATA DARI STORE LOCAL
     var DataLocalInformasiLogin =
-    await _DataSharedPreferences.BacaDataSharedPreferences(
-        "Informasi_Login",
-        Tipe: "array_object");
+        await _DataSharedPreferences.BacaDataSharedPreferences(
+            "Informasi_Login",
+            Tipe: "array_object");
     //FUNGSI MENGAMBIL DATA DARI STORE LOCAL
 
     setState(() {
@@ -103,7 +101,8 @@ class _EditDataTransaksiGudangKecilState
   Future BacaDataYangAkanDiEdit() async {
     print('Baca Data Yang Akan Di Edit');
 
-    var Endpoint_API = "api/sistem_gudang/v1/transaksi_gudang_kecil/baca_data_transaksi_gudang_kecil.php";
+    var Endpoint_API =
+        "api/sistem_gudang/v1/transaksi_gudang_kecil/baca_data_transaksi_gudang_kecil.php";
     Map data_body = {
       "Token_Login": InformasiLogin['Token_Login_Saat_Ini'],
       "Id_Pengguna": InformasiLogin['Id_Pengguna'],
@@ -134,13 +133,14 @@ class _EditDataTransaksiGudangKecilState
             setState(() {
               Tanggal_Item_Stok.text = data['Data']['Tanggal_Item_Stok'];
               Id_Gudang_Kecil = data['Data']['Id_Gudang_Kecil'];
-              Kode_Stok_Gudang_Kecil.text = data['Data']['Kode_Stok_Gudang_Kecil'];
+              Kode_Stok_Gudang_Kecil.text =
+                  data['Data']['Kode_Stok_Gudang_Kecil'];
             });
 
             var ListArrayObjectItem_Yang_Tersimpan_Pada_Database =
-            jsonDecode(data['Data']['JSON_Item']);
+                jsonDecode(data['Data']['JSON_Item']);
 
-            ListDataItem.forEach((data) {
+            for (var data in ListDataItem) {
               Map Data_Item_Detail = {
                 "Nama_Item": data['Nama_Item'],
                 "Id_Item": data['Id_Item'],
@@ -149,25 +149,27 @@ class _EditDataTransaksiGudangKecilState
               };
 
               ListArrayObjectItem_Yang_Tersimpan_Pada_Database.forEach(
-                      (data_yang_tersimpan_pada_database) {
-                    //JIKA ADA DATA YANG SAMA, MAKA AKAN DI OVVERIDE
-                    if (data_yang_tersimpan_pada_database['Id_Item'] ==
-                        data['Id_Item']) {
-                      Data_Item_Detail = {
-                        "Nama_Item": data['Nama_Item'],
-                        "Id_Item": data['Id_Item'],
-                        "Stok_Akhir": data_yang_tersimpan_pada_database['Stok_Akhir'],
-                        "Sisa_Satuan_Terkecil": data_yang_tersimpan_pada_database['Sisa_Satuan_Terkecil'],
-                      };
-                    }
-                  });
+                  (data_yang_tersimpan_pada_database) {
+                //JIKA ADA DATA YANG SAMA, MAKA AKAN DI OVVERIDE
+                if (data_yang_tersimpan_pada_database['Id_Item'] ==
+                    data['Id_Item']) {
+                  Data_Item_Detail = {
+                    "Nama_Item": data['Nama_Item'],
+                    "Id_Item": data['Id_Item'],
+                    "Stok_Akhir":
+                        data_yang_tersimpan_pada_database['Stok_Akhir'],
+                    "Sisa_Satuan_Terkecil": data_yang_tersimpan_pada_database[
+                        'Sisa_Satuan_Terkecil'],
+                  };
+                }
+              });
 
               List ListArrayObjectItemSelanjutnya = ListArrayObjectItem;
               ListArrayObjectItemSelanjutnya.add(Data_Item_Detail);
               setState(() {
                 ListArrayObjectItem = ListArrayObjectItemSelanjutnya;
               });
-            });
+            }
           } else {
             setState(() {
               EditData = {};
@@ -185,13 +187,14 @@ class _EditDataTransaksiGudangKecilState
     print('Submit Update');
 
     var ListArrayObjectItem_Terpakai = [];
-    ListArrayObjectItem.forEach((data) {
-      if((data['Stok_Akhir'] != "") || (data['Sisa_Satuan_Terkecil'] != "")){
+    for (var data in ListArrayObjectItem) {
+      if ((data['Stok_Akhir'] != "") || (data['Sisa_Satuan_Terkecil'] != "")) {
         ListArrayObjectItem_Terpakai.add(data);
       }
-    });
+    }
 
-    var Endpoint_API = "api/sistem_gudang/v1/transaksi_gudang_kecil/update_data_transaksi_gudang_kecil.php";
+    var Endpoint_API =
+        "api/sistem_gudang/v1/transaksi_gudang_kecil/update_data_transaksi_gudang_kecil.php";
     Map data_body = {
       "Token_Login": InformasiLogin['Token_Login_Saat_Ini'],
       "Id_Pengguna": InformasiLogin['Id_Pengguna'],
@@ -385,7 +388,8 @@ class _EditDataTransaksiGudangKecilState
   Future SubmitHapus() async {
     print('Submit Hapus');
 
-    var Endpoint_API = "api/sistem_gudang/v1/transaksi_gudang_kecil/hapus_ke_tong_sampah_data_transaksi_gudang_kecil.php";
+    var Endpoint_API =
+        "api/sistem_gudang/v1/transaksi_gudang_kecil/hapus_ke_tong_sampah_data_transaksi_gudang_kecil.php";
     Map data_body = {
       "Token_Login": InformasiLogin['Token_Login_Saat_Ini'],
       "Id_Pengguna": InformasiLogin['Id_Pengguna'],
@@ -393,7 +397,7 @@ class _EditDataTransaksiGudangKecilState
     };
     print(Terhubung_Ke_Internet);
 
-    if(Terhubung_Ke_Internet == true) {
+    if (Terhubung_Ke_Internet == true) {
       print("Hapus Dengan Koneksi Internet");
       try {
         print(Var_URL_API + Endpoint_API);
@@ -425,7 +429,9 @@ class _EditDataTransaksiGudangKecilState
                       Navigator.push(
                           context,
                           //routing into add page
-                          MaterialPageRoute(builder: (context) => ListDataTransaksiGudangKecil()));
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ListDataTransaksiGudangKecil()));
                     },
                   ),
                 ],
@@ -462,7 +468,7 @@ class _EditDataTransaksiGudangKecilState
       } catch (e) {
         print(e);
       }
-    }else{
+    } else {
       print("Tidak Ada Koneksi Internet");
       // ALERT GAGAL
       AlertDialog alert = AlertDialog(
@@ -698,7 +704,7 @@ class _EditDataTransaksiGudangKecilState
   // FUNGSI AMBIL NAMA ITEM BERDASARKAN ID ITEM UNTUK DROPDOWN SEARCH
   AmbilNamaItemBerdasarkanIdItem(Id_Item) {
     final selected_Item = ListDataItem.firstWhere(
-          (e) => "${e['Id_Item']}" == Id_Item,
+      (e) => "${e['Id_Item']}" == Id_Item,
       orElse: () => null,
     );
     if (selected_Item != null) {
@@ -735,306 +741,318 @@ class _EditDataTransaksiGudangKecilState
       ),
       body: Loading_Form == true
           ? Container(
-        padding: EdgeInsets.all(15.0),
-        height: MediaQuery.of(context).size.height,
-        child: Center(child: CircularProgressIndicator()),
-      )
+              padding: EdgeInsets.all(15.0),
+              height: MediaQuery.of(context).size.height,
+              child: Center(child: CircularProgressIndicator()),
+            )
           : Form(
-        key: _formKey,
-        child: Container(
-          padding: EdgeInsets.all(0.0),
-          width: double.infinity,
-          child: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: Nama_Cabang,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      labelText: "Cabang",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      // prefixIcon: Icon(Icons.person, size: 24),
-                    ),
-                    readOnly: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Cabang';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: Kode_Stok_Gudang_Kecil,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      labelText: "Kode Stok Gudang Kecil",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      // prefixIcon: Icon(Icons.person, size: 24),
-                    ),
-                    readOnly: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Kode Stok Gudang Kecil';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-
-                  InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: "Gudang Kecil",
-                      border: OutlineInputBorder(
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                    ),
-                    child: Container(
-                      child: DropdownButton(
-                        isExpanded: true,
-                        isDense: true,
-                        hint: Text("Pilih Gudang Kecil"),
-                        underline: Container(),
-                        value: Id_Gudang_Kecil == ''
-                            ? null
-                            : Id_Gudang_Kecil,
-                        items: ListDataGudangKecil.map((item) {
-                          return DropdownMenuItem(
-                            value: item['Id_Gudang_Kecil'],
-                            child: Text(
-                                item['Kode_Gudang_Kecil'].toString() +
-                                    " - " +
-                                    item['Nama_Gudang'].toString()),
-                          );
-                        }).toList(),
-                        onTap: () {
-                          setState(() {
-                            Id_Gudang_Kecil = '';
-                          });
-                        },
-                        onChanged: (value) {
-                          setState(() {
-                            Id_Gudang_Kecil = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: Tanggal_Item_Stok,
-                    decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.calendar_today),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      labelText: 'Tanggal',
-                      hintText: 'Tanggal',
-                      fillColor: Colors.white,
-                      filled: true,
-                    ),
-                    readOnly: true,
-                    onTap: () async {
-                      if(InformasiLogin['Sebagai'] != "Admin"){
-                        return;
-                      }else{
-                        DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2101));
-
-                        if (pickedDate != null) {
-                          print(pickedDate);
-                          String formattedDate =
-                          DateFormat('yyyy-MM-dd').format(pickedDate);
-                          print(formattedDate);
-
-                          setState(() {
-                            Tanggal_Item_Stok.text = formattedDate;
-                          });
-                        } else {
-                          print("Date is not selected");
-                        }
-                      }
-                    },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Tanggal tidak boleh kosong!';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  Divider(color: Colors.black),
-                  Row(children: [
-                    Expanded(
-                        child: Text(
-                          "List Item : ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )),
-                  ]),
-
-                  // LIST ITEM
-                  ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    itemCount: Loading_Form
-                        ? ListArrayObjectItem.length + 1
-                        : ListArrayObjectItem.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index < ListArrayObjectItem.length) {
-                        return Container(
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Column(children: [
-                                        TextFormField(
-                                          initialValue: ListArrayObjectItem[index]['Nama_Item'],
-                                          keyboardType: TextInputType.name,
-                                          decoration: InputDecoration(
-                                            labelText: "Item",
-                                            border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            fillColor: Colors.white,
-                                            filled: true,
-                                            // prefixIcon: Icon(Icons.person, size: 24),
-                                          ),
-                                          readOnly: true,
-                                        ),
-                                      ]),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          TextFormField(
-                                            initialValue:
-                                            (ListArrayObjectItem[index]
-                                            ['Stok_Akhir'] == null) ? "" : ListArrayObjectItem[index]
-                                            ['Stok_Akhir']
-                                                .toString(),
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              labelText: "Stok Akhir",
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10.0),
-                                              ),
-                                              fillColor: Colors.white,
-                                              filled: true,
-                                              contentPadding:
-                                              EdgeInsets.symmetric(
-                                                  vertical: 5,
-                                                  horizontal: 10),
-                                              // prefixIcon: Icon(Icons.person, size: 24),
-                                            ),
-                                            style: TextStyle(fontSize: 14),
-                                            onChanged: (value) {
-                                              UbahStokAkhirItem(index, value);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          TextFormField(
-                                            initialValue:
-                                            (ListArrayObjectItem[index]
-                                            ['Sisa_Satuan_Terkecil'] == null) ? "" : ListArrayObjectItem[index]
-                                            ['Sisa_Satuan_Terkecil']
-                                                .toString(),
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                              labelText: "Sisa Gramasi",
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10.0),
-                                              ),
-                                              fillColor: Colors.white,
-                                              filled: true,
-                                              contentPadding:
-                                              EdgeInsets.symmetric(
-                                                  vertical: 5,
-                                                  horizontal: 10),
-                                              // prefixIcon: Icon(Icons.person, size: 24),
-                                            ),
-                                            style: TextStyle(fontSize: 14),
-                                            onChanged: (value) {
-                                              UbahSisaSatuanTerkecilItem(index, value);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ));
-                      } else {
-                        return Padding(
-                          padding:
-                          EdgeInsets.only(top: 15.0, bottom: 20.0),
-                          child: Center(
-                            child: CircularProgressIndicator(),
+              key: _formKey,
+              child: Container(
+                padding: EdgeInsets.all(0.0),
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: Nama_Cabang,
+                          keyboardType: TextInputType.name,
+                          decoration: InputDecoration(
+                            labelText: "Cabang",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            // prefixIcon: Icon(Icons.person, size: 24),
                           ),
-                        );
-                      }
-                    },
-                    // separatorBuilder: (BuildContext context, int index) =>
-                    //     const Divider(),
-                  ),
-
-                  SizedBox(height: 30),
-                  // TOMBOL UPDATE
-                  Center(
-                    child: Container(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 232, 18, 17),
-                          minimumSize: const Size.fromHeight(50),
+                          readOnly: true,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Cabang';
+                            }
+                            return null;
+                          },
                         ),
-                        onPressed: () {
-                          //validate
-                          if (_formKey.currentState!.validate()) {
-                            //send data to database with this method
-                            SubmitUpdate();
-                          }
-                        },
-                        child: new Text('UPDATE'),
-                      ),
+                        SizedBox(height: 20),
+
+                        TextFormField(
+                          controller: Kode_Stok_Gudang_Kecil,
+                          keyboardType: TextInputType.name,
+                          decoration: InputDecoration(
+                            labelText: "Kode Stok Gudang Kecil",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            // prefixIcon: Icon(Icons.person, size: 24),
+                          ),
+                          readOnly: true,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Kode Stok Gudang Kecil';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+
+                        InputDecorator(
+                          decoration: InputDecoration(
+                            labelText: "Gudang Kecil",
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                          ),
+                          child: Container(
+                            child: DropdownButton(
+                              isExpanded: true,
+                              isDense: true,
+                              hint: Text("Pilih Gudang Kecil"),
+                              underline: Container(),
+                              value: Id_Gudang_Kecil == ''
+                                  ? null
+                                  : Id_Gudang_Kecil,
+                              items: ListDataGudangKecil.map((item) {
+                                return DropdownMenuItem(
+                                  value: item['Id_Gudang_Kecil'],
+                                  child: Text(
+                                      "${item['Kode_Gudang_Kecil']} - ${item['Nama_Gudang']}"),
+                                );
+                              }).toList(),
+                              onTap: () {
+                                setState(() {
+                                  Id_Gudang_Kecil = '';
+                                });
+                              },
+                              onChanged: (value) {
+                                setState(() {
+                                  Id_Gudang_Kecil = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+
+                        TextFormField(
+                          controller: Tanggal_Item_Stok,
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(Icons.calendar_today),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            labelText: 'Tanggal',
+                            hintText: 'Tanggal',
+                            fillColor: Colors.white,
+                            filled: true,
+                          ),
+                          readOnly: true,
+                          onTap: () async {
+                            if (InformasiLogin['Sebagai'] != "Admin") {
+                              return;
+                            } else {
+                              DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101));
+
+                              if (pickedDate != null) {
+                                print(pickedDate);
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                                print(formattedDate);
+
+                                setState(() {
+                                  Tanggal_Item_Stok.text = formattedDate;
+                                });
+                              } else {
+                                print("Date is not selected");
+                              }
+                            }
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Tanggal tidak boleh kosong!';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        Divider(color: Colors.black),
+                        Row(children: const [
+                          Expanded(
+                              child: Text(
+                            "List Item : ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                        ]),
+
+                        // LIST ITEM
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: Loading_Form
+                              ? ListArrayObjectItem.length + 1
+                              : ListArrayObjectItem.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index < ListArrayObjectItem.length) {
+                              return Container(
+                                  child: Column(
+                                children: [
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(children: [
+                                          TextFormField(
+                                            initialValue:
+                                                ListArrayObjectItem[index]
+                                                    ['Nama_Item'],
+                                            keyboardType: TextInputType.name,
+                                            decoration: InputDecoration(
+                                              labelText: "Item",
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                              ),
+                                              fillColor: Colors.white,
+                                              filled: true,
+                                              // prefixIcon: Icon(Icons.person, size: 24),
+                                            ),
+                                            readOnly: true,
+                                          ),
+                                        ]),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            TextFormField(
+                                              initialValue:
+                                                  (ListArrayObjectItem[index]
+                                                              ['Stok_Akhir'] ==
+                                                          null)
+                                                      ? ""
+                                                      : ListArrayObjectItem[
+                                                                  index]
+                                                              ['Stok_Akhir']
+                                                          .toString(),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: InputDecoration(
+                                                labelText: "Stok Akhir",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 10),
+                                                // prefixIcon: Icon(Icons.person, size: 24),
+                                              ),
+                                              style: TextStyle(fontSize: 14),
+                                              onChanged: (value) {
+                                                UbahStokAkhirItem(index, value);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            TextFormField(
+                                              initialValue: (ListArrayObjectItem[
+                                                              index][
+                                                          'Sisa_Satuan_Terkecil'] ==
+                                                      null)
+                                                  ? ""
+                                                  : ListArrayObjectItem[index][
+                                                          'Sisa_Satuan_Terkecil']
+                                                      .toString(),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: InputDecoration(
+                                                labelText: "Sisa Gramasi",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 10),
+                                                // prefixIcon: Icon(Icons.person, size: 24),
+                                              ),
+                                              style: TextStyle(fontSize: 14),
+                                              onChanged: (value) {
+                                                UbahSisaSatuanTerkecilItem(
+                                                    index, value);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ));
+                            } else {
+                              return Padding(
+                                padding:
+                                    EdgeInsets.only(top: 15.0, bottom: 20.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+                          },
+                          // separatorBuilder: (BuildContext context, int index) =>
+                          //     const Divider(),
+                        ),
+
+                        SizedBox(height: 30),
+                        // TOMBOL UPDATE
+                        Center(
+                          child: Container(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Color.fromARGB(255, 232, 18, 17),
+                                minimumSize: const Size.fromHeight(50),
+                              ),
+                              onPressed: () {
+                                //validate
+                                if (_formKey.currentState!.validate()) {
+                                  //send data to database with this method
+                                  SubmitUpdate();
+                                }
+                              },
+                              child: Text('UPDATE'),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
