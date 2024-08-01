@@ -775,7 +775,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
         drawer: DrawerMenu(
-          Nama_Lengkap: InformasiLogin['Nama_Lengkap'],
+          Nama_Lengkap: InformasiLogin['Nama_Lengkap'] ?? "Admin",
         ),
         // bottomNavigationBar: BottomMenu()
       ),
